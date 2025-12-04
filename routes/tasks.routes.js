@@ -7,6 +7,8 @@ let tasks = [
 const router = Router();
 //main route 
 router.get('/', (req, res) => {
+    console.log("tasks req");
+
     let isCompleted = req.query.complete;
     if (isCompleted) {
         console.log(isCompleted);
@@ -29,7 +31,7 @@ router.get('/:id', (req, res) => {
     res.status(404).send('Task not found');
 });
 //post new task
-router.post('/tasks', (req, res) => {
+router.post('/', (req, res) => {
 
     const newTask = {
         id: tasks.length + 1,
@@ -43,20 +45,33 @@ router.post('/tasks', (req, res) => {
 
 });
 //update task //:
-router.put('/tasks/:id', (req, res) => {
-    const taskId = parseInt(req.params.id);
+router.put('/:id', (req, res) => {
+    const { method } = req
+    const { taskCompleted, lama: LL } = req.query
+    const { authorization: token } = req.headers
+    
+    const finalToken = token.split(" ")[1]
+    console.log(finalToken);
+
+    const taskId = parseInt(req.params.id)
+    if (method === "PUT")
+        console.log("good");
+    console.log(taskId);
+
     const task = tasks.find(t => t.id === taskId);
     if (task) {
         task.title = req.body.title || task.title;
         task.completed = req.body.completed !== undefined ?
             req.body.completed : task.completed;
+        console.log(task);
+
         res.json(task);
     } else {
         res.status(404).send('Task not found');
     }
 });
 // ID מחיקת משימה לפי - DELETE 
-router.delete('/tasks/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     console.log(tasks);
     const taskId = parseInt(req.params.id);
     tasks = tasks.filter(t => t.id !== taskId);

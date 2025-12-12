@@ -1,15 +1,11 @@
 
-
-
 let tasks = [
     { id: 1, title: "Learn Routing", completed: true },
     { id: 2, title: "Build an API", completed: false }
 ];
 
 export const getTasks = (req, res) => {
-    console.log("getTasks()");
-    
-
+    console.log("getTasks()"); 
     let isCompleted = req.query.complete;
     if (isCompleted) {
         console.log(isCompleted);

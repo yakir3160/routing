@@ -1,10 +1,9 @@
 import express from 'express'
 import cors from "cors"
-import { config } from 'dotenv'
 import apiRoutes from "./routes/index.js"
 import { checkApiKey } from './utils/apiKey.js';
 //loading env variables
-config();
+
 
 // creating app 
 const app = express();
@@ -14,16 +13,9 @@ app.use(cors());
 app.use(express.json())
 app.use(checkApiKey);
 
-app.use('/api',apiRoutes)
+
+app.use('/api', apiRoutes)
 
 
-//starting server
-const port = process.env.PORT || 5002;
 
-app.listen(port, () => {
-    {
-        console.log(`The server is running on http://localhost:${port}`);
-    }
-})
-
-
+export default app

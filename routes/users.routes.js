@@ -1,21 +1,15 @@
 import { Router } from "express";
-
+import {getUsers,registerUser,logUser,actionById} from '../controllers/users.controller.js'
 
 const router = Router();
 
-const users = [
-    {
-        name: "Yakir",
-        age: 30
-    },
-    {
-        name: "Tal",
-        age: 22
-    }
-]
-router.get('/', (req,res)=>{
-    res.json(users)
-})  
+router.get('/', getUsers);
+router.post('/register',registerUser)
+router.post('/login',logUser)
 
+
+router.get('/:id',actionById) 
+router.put('/:id',actionById)
+router.delete('/:id',actionById)
 
 export default router

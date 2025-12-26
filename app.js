@@ -11,8 +11,15 @@ const app = express();
 // middlewear (cors ,json)
 app.use(cors());
 app.use(express.json())
-app.use(checkApiKey);
 
+// request logging middleware - logs every incoming request
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} ${req.method} ${req.originalUrl} [app.js]`);
+    next();
+});
+// app.use(checkApiKey);
+
+console.log("app.js file");
 
 app.use('/api', apiRoutes)
 

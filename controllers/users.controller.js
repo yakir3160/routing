@@ -1,8 +1,11 @@
-
+import { userService } from "../services/users.service.js";
 
 export const getUsers = async (req, res) => {
     try {
-        const response = await getUsers()
+        console.log("users controller getUsers start");
+        
+        const response = await userService.getUsers()
+        console.log("users controller getUsers end");
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error);
@@ -11,7 +14,9 @@ export const getUsers = async (req, res) => {
 
 export const registerUser = async (req, res) => {
     try {
-        const response = await registerUser()
+        console.log("users controller registerUser start");
+        const response = await userService.registerUser(req.body)
+        console.log("users controller registerUser end");
         res.status(201).json(response);
     } catch (error) {
         res.status(500).json(error);
@@ -20,7 +25,7 @@ export const registerUser = async (req, res) => {
 
 export const logUser = async (req, res) => {
     try {
-        const response = await logUser()
+        const response = await userService.logUser()
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error);
@@ -29,12 +34,15 @@ export const logUser = async (req, res) => {
 
 export const actionById = async (req, res) => {
     try {
-        const {id} = req.params
-        const {method} = req
-        const response = await actionById(id,method)
-        res.status(response.status).json(response);
+        const { id } = req.params
+        const { method } = req
+        const { body } = req
+        const response = await userService.actionById(id, method, body)
+        const statusCode = (response && Number.isInteger(response.status)) ? response.status : 200
+        res.status(statusCode).json(response);
     } catch (error) {
-        res.status(error.status).json(error);
+        const statusCode = (error && Number.isInteger(error.status)) ? error.status : 500
+        res.status(statusCode).json(error);
     }
 }
 

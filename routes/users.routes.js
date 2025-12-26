@@ -3,6 +3,11 @@ import {getUsers,registerUser,logUser,actionById} from '../controllers/users.con
 
 const router = Router();
 
+router.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} ${req.method} ${req.originalUrl} [users.routes.js]`);
+    next();
+});
+
 router.get('/', getUsers);
 router.post('/register',registerUser)
 router.post('/login',logUser)

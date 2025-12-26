@@ -1,9 +1,9 @@
-import { tasksDal } from "../dal/tasks.dal"
+import { tasksDal } from "../dal/tasks.dal.js";
 
 export const getTasks = async () =>{
     try{
-        console.log("getTasks servicas start")
-        const response = await tasksDal.getTask()
+        console.log("getTasks service start")
+        const response = await tasksDal.getTasks()
         return response
     } catch(error) {
         throw error

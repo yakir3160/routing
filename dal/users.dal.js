@@ -1,5 +1,5 @@
 
-
+import { User } from "../models/user.model.js";
 let  users = [
     { id: 1, name: "John Doe", email: "john.doe@example.com" },
     { id: 2, name: "Jane Smith", email: "jane.smith@example.com" },
@@ -21,8 +21,8 @@ export const userDal = {
 
     registerUser: async (body) => {
         try {
-            users.push({ id: users.length + 1, ...body })
-            const response = users
+             const response = await User.create(body);
+            console.log("users dal registerUser end");
             return response;
         } catch (error) {
             throw error

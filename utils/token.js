@@ -1,17 +1,18 @@
+import  jwt from 'jsonwebtoken';
+import {jwtSecret} from '../config/index.js'
 
+export const createToken = async (payload, options) => {
 
-export const checkToken = (req,res,next) => {
-    const { authorization: token } = req.headers
-     if(!token){
-        return res.status(401).json(
-            {
-                message: "Unauthorized, no token provided,login to get access",
-                status: 401
-            
-            })
+    if (!jwtSecret) {
+        throw new Error('JWT Secret is not defined');
     }
-    next(); 
-}
+    return await jwt.sign(payload, jwtSecret, options);
+};
 
-
-
+export const verifyToken = async (token) => {
+    try {
+        return await jwt.verify(token, jwtSecret);
+    } catch (error) {
+        throw error;
+    }
+};

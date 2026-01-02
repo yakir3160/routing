@@ -25,7 +25,10 @@ export const registerUser = async (req, res) => {
 
 export const logUser = async (req, res) => {
     try {
-        const response = await userService.logUser()
+        console.log("users controller logUser start");
+        const credentials = req.body;
+        const response = await userService.logUser(credentials);
+        console.log("users controller logUser end");
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error);

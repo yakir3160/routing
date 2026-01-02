@@ -1,5 +1,6 @@
 import { userDal } from "../dal/users.dal.js";
-
+import { hashPassword, comparePassword } from "../utils/hashPassword.js";
+import { createToken } from "../utils/token.js";
 
 export const userService = {
     getUsers: async () => {
@@ -15,8 +16,13 @@ export const userService = {
 
     registerUser: async (userData) => {
         try {
-            const response = await userDal.registerUser(userData);
-            return response;
+            console.log("users service registerUser start");
+            const hashedPassword = await hashPassword(userData.password);
+            const response = await userDal.registerUser({ ...userData, password: hashedPassword });
+            console.log("users service registerUser end");
+            const token = await createToken({ id: response._id, email: response.email }, { expiresIn: '1d' });
+            console.log("users service registerUser token created");
+            return { ...response._doc, password: undefined, token };
         } catch (error) {
             throw error;
         }
@@ -24,8 +30,20 @@ export const userService = {
 
     logUser: async (credentials) => {
         try {
+            if (!credentials.email || !credentials.password) {
+                throw { status: 400, message: "Email and password are required" };
+            }
+            console.log("users service logUser start");
             const response = await userDal.logUser(credentials);
-            return response;
+            
+            const isMatch = await comparePassword(credentials.password, response.password);
+            if (!isMatch) {
+                throw { status: 401, message: "Invalid password" };
+            }
+            console.log("users service logUser end");
+            const token = await createToken({ id: response._id, email: response.email }, { expiresIn: '1d' });
+            console.log("users service logUser token created");
+            return { ...response._doc, password: undefined, token };
         } catch (error) {
             throw error;
         }
@@ -33,6 +51,7 @@ export const userService = {
 
     actionById: async (id, method, body) => {
         try {
+            console.log("users service action by id start");
             let response = null;
             if (method === 'GET')
                 response = await userDal.getUserById(id);
@@ -43,6 +62,7 @@ export const userService = {
             else
                 throw { status: 400, message: 'Invalid method' };
 
+            console.log("users service action by id end");
             return response;
         } catch (error) {
             if (error && error.status === 404)

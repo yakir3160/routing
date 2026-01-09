@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {getUsers,registerUser,logUser,actionById} from '../controllers/users.controller.js'
+import { extractToken } from "../utils/token.js";
 
 const router = Router();
 
@@ -8,13 +9,12 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/', getUsers);
-router.post('/register',registerUser)
-router.post('/login',logUser)
+router.get('/', extractToken, getUsers);
+router.post('/register', registerUser);
+router.post('/login', logUser);
 
-
-router.get('/:id',actionById) 
-router.put('/:id',actionById)
-router.delete('/:id',actionById)
+router.get('/:id', extractToken, actionById);
+router.put('/:id', extractToken, actionById);
+router.delete('/:id', extractToken, actionById);
 
 export default router

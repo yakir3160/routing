@@ -1,9 +1,11 @@
+
 import { userService } from "../services/users.service.js";
+import { verifyToken } from "../utils/token.js";
 
 export const getUsers = async (req, res) => {
     try {
         console.log("users controller getUsers start");
-        
+        await verifyToken(req.token);
         const response = await userService.getUsers()
         console.log("users controller getUsers end");
         res.status(200).json(response);
@@ -37,6 +39,7 @@ export const logUser = async (req, res) => {
 
 export const actionById = async (req, res) => {
     try {
+        await verifyToken(req.token);
         const { id } = req.params
         const { method } = req
         const { body } = req

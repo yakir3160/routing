@@ -20,7 +20,7 @@ export const userDal = {
 
     registerUser: async (body) => {
         try {
-            const response = await User.create(body);
+            const response = (await User.create(body)).validate();
             console.log("users dal registerUser end");
             return response;
         } catch (error) {

@@ -1,6 +1,8 @@
 import { userDal } from "../dal/users.dal.js";
 import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 import { createToken } from "../utils/token.js";
+import { getWeather } from "../microServices/weather.service.js";
+import { get } from "mongoose";
 
 export const userService = {
     getUsers: async () => {
@@ -17,10 +19,15 @@ export const userService = {
     registerUser: async (userData) => {
         try {
             console.log("users service registerUser start");
+            if (userData.password.length < 7) {
+                throw { status: 400, message: "Password must be at least 7 characters long" };
+            }
             const hashedPassword = await hashPassword(userData.password);
+            console.log( hashedPassword);
+            
             const response = await userDal.registerUser({ ...userData, password: hashedPassword });
             console.log("users service registerUser end");
-            const token = await createToken({ id: response._id, email: response.email }, { expiresIn: '1d' });
+            const token = await createToken({ id: response._id, email: response.email }, { expiresIn: '1 month' });
             console.log("users service registerUser token created");
             return { ...response._doc, password: undefined, token };
         } catch (error) {
@@ -53,8 +60,12 @@ export const userService = {
         try {
             console.log("users service action by id start");
             let response = null;
-            if (method === 'GET')
-                response = await userDal.getUserById(id);
+            if (method === 'GET'){
+
+                      response = await userDal.getUserById(id);
+                      console.log("users service action by id weather data:", await getWeather(response.city, response.state, response.country));
+            }
+                
             else if (method === 'PUT')
                 response = await userDal.updateUser(id, body);
             else if (method === 'DELETE')

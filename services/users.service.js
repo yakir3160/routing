@@ -2,7 +2,6 @@ import { userDal } from "../dal/users.dal.js";
 import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 import { createToken } from "../utils/token.js";
 import { getWeather } from "../microServices/weather.service.js";
-import { get } from "mongoose";
 
 export const userService = {
     getUsers: async () => {

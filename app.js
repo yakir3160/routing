@@ -1,8 +1,7 @@
 import express from 'express'
 import cors from "cors"
 import apiRoutes from "./routes/index.js"
-import { checkApiKey } from './utils/apiKey.js';
-//loading env variables
+
 
 
 // creating app 

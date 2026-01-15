@@ -8,8 +8,22 @@ const createURL = (lat ,lon) => {
     return `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherApiKey}&units=metric`;
 }
 
+
+
+export const getGeolocation = async (city,state,country) => {
+    try {
+        const response = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${city},${state},${country}&appid=${openWeatherApiKey}&units=metric`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getWeather = async (city,state,country) => {
     try {
+        if (!openWeatherApiKey) {
+            throw new Error('Weather API key is required');
+        }
         const geolocationData = await getGeolocation(city,state,country)[0];
 
         const reqUrl =  await createURL(geolocationData.lat, geolocationData.lon);
@@ -19,16 +33,6 @@ export const getWeather = async (city,state,country) => {
         return response.data;
     } catch (error) {
        
-        throw error;
-    }
-};
-
-
-export const getGeolocation = async (city,state,country) => {
-    try {
-        const response = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${city},${state},${country}&appid=${openWeatherApiKey}&units=metric`);
-        return response.data;
-    } catch (error) {
         throw error;
     }
 };

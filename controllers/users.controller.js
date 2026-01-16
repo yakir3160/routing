@@ -45,6 +45,8 @@ export const actionById = async (req, res) => {
         const { body } = req
         const response = await userService.actionById(id, method, body)
         const statusCode = (response && Number.isInteger(response.status)) ? response.status : 200
+        console.log(response);
+        
         res.status(statusCode).json(response);
     } catch (error) {
         const statusCode = (error && Number.isInteger(error.status)) ? error.status : 500

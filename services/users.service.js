@@ -2,7 +2,7 @@ import { userDal } from "../dal/users.dal.js";
 import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 import { createToken } from "../utils/token.js";
 import { getWeather } from "../microServices/weather.service.js";
-
+import { dateTimeFormater_il } from "../utils/dateTimeFormater_il.js";  
 export const userService = {
     getUsers: async () => {
         try {
@@ -22,8 +22,8 @@ export const userService = {
                 throw { status: 400, message: "Password must be at least 7 characters long" };
             }
             const hashedPassword = await hashPassword(userData.password);
-            console.log( hashedPassword);
-            
+            console.log(hashedPassword);
+
             const response = await userDal.registerUser({ ...userData, password: hashedPassword });
             console.log("users service registerUser end");
             const token = await createToken({ id: response._id, email: response.email }, { expiresIn: '1 month' });
@@ -41,7 +41,7 @@ export const userService = {
             }
             console.log("users service logUser start");
             const response = await userDal.logUser(credentials);
-            
+
             const isMatch = await comparePassword(credentials.password, response.password);
             if (!isMatch) {
                 throw { status: 401, message: "Invalid password" };
@@ -57,14 +57,25 @@ export const userService = {
 
     actionById: async (id, method, body) => {
         try {
+
             console.log("users service action by id start");
             let response = null;
-            if (method === 'GET'){
+            if (method === 'GET') {
 
-                      response = await userDal.getUserById(id);
-                      console.log("users service action by id weather data:", await getWeather(response.city, response.state, response.country));
+                response = await userDal.getUserById(id);
+                console.log(response);
+
+                const weather = await getWeather(response.city, response.state, response.country);
+  
+                return {
+                    ...response,
+                    createdAt: dateTimeFormater_il.formatDate(response.createdAt)+ ' ' + dateTimeFormater_il.formatTime(response.createdAt),
+                    updatedAt: dateTimeFormater_il.formatDate(response.updatedAt)+ ' ' + dateTimeFormater_il.formatTime(response.updatedAt),
+                    weather
+                };
+
             }
-                
+
             else if (method === 'PUT')
                 response = await userDal.updateUser(id, body);
             else if (method === 'DELETE')

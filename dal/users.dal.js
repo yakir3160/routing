@@ -10,7 +10,7 @@ export const userDal = {
     getUsers: async () => {
         try {
             console.log("users dal getUsers start");
-            const response = await User.find();
+            const response = await User.find().lean();
             console.log("users dal getUsers end");
             return response;
         } catch (error) {
@@ -42,7 +42,7 @@ export const userDal = {
     getUserById: async (id) => {
         try {
 
-            const response = await User.findById(id)
+            const response = await User.findById(id).lean();
             return response;
         } catch (error) {
             throw error
